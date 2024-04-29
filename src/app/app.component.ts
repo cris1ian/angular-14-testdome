@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Pipe, PipeTransform } from '@angular/core';
 
 import { enableProdMode, Output, EventEmitter } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
@@ -18,33 +18,24 @@ export class AppComponent {
   name = 'Angular ' + VERSION.major;
 }
 
-@Component({
-  selector: 'app-root',
-  template: `<div>
-    <darkmode-toggler (stateChanged)="handleStateChange($event)"></darkmode-toggler>
-  </div>`,
-  styles: []
+@Pipe({
+  name: 'startsWithFilterPipe',
+  pure: false
 })
-export class Resource {
-  handleStateChange(event: any) {
-    console.log(event);
+export class StartsWithFilterPipe implements PipeTransform {
+  transform(array: string[], startingString: string): string[] {
+    const filteredArray: string[] = array.filter(elem => elem.startsWith(startingString));
+    return filteredArray
   }
 }
 
 @Component({
-  selector: 'darkmode-toggler',
-  template: `<div>
-    <button (click)="onClick($event)">Toggle dark mode</button>
-    <p>{{darkModeActive ? "active" : "disabled"}}</p>
-  </div>`,
+  selector: 'app-root',
+  template: `<h1>{{ ["City: New York", "City details: None", "Cargo type: fragile"] | startsWithFilterPipe:"Ci" }}</h1>`,
   styles: []
 })
-export class DarkModeToggler {
-  @Output() stateChanged: EventEmitter<string> = new EventEmitter<string>();
-  darkModeActive: boolean = false;
-
-  onClick = (event: any) => {
-    this.darkModeActive = !this.darkModeActive;
-    this.stateChanged.emit(this.darkModeActive ? "active" : "disabled");
+export class DeliveryDetails {
+  handleStateChange(event: any) {
+    console.log(event);
   }
 }
