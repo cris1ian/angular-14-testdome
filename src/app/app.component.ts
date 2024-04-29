@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Injectable, Input, OnInit } from '@angular/core';
 
 import { enableProdMode, Output, EventEmitter } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-main',
-  template: `<app-root [count]=4></app-root>`,
+  template: `<app-weather></app-weather>`,
   // templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -18,30 +18,48 @@ export class AppComponent {
   name = 'Angular ' + VERSION.major;
 }
 
-@Component({
-  selector: 'app-root',
-  template: `
-  <table>
-    <tbody>
-      <tr>
-        <td *ngFor="let card of [].constructor(count); let i = index" (click)="onCardClick(i)">
-          {{i===selectedCard?"up":"down"}}
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  `,
-  styles: []
+
+export class Weather {
+  temperature: string = "";
+  description: string = "";
+}
+
+@Injectable({
+  providedIn: 'root'
 })
-export class Cards implements OnInit {
-  @Input() count: number = 0;
-  selectedCard: number = -1;
+export class WeatherService {
+  constructor() { }
+
+  public saveWeather(weather: Weather) {
+    console.log(`Temperature: ${weather.temperature} - Description: ${weather.description}`);
+  }
+}
+
+@Component({
+  selector: 'app-weather',
+  template: `<div>
+  <form (submit)="onSubmit()">
+    <label> Description
+      <input name="description" [(ngModel)]="weather.description">
+    </label> 
+    <br />
+    <label> Temperature
+      <input name="temperature" [(ngModel)]="weather.temperature">
+    </label>
+    <br />
+    <button type="submit">Submit</button>
+  </form>
+</div>`,
+})
+export class WeatherComponent implements OnInit {
+  weather: Weather;
+  constructor(private weatherService: WeatherService) { this.weather = new Weather(); }
 
   ngOnInit() {
-    console.log(this.count);
+
   }
 
-  onCardClick(index: number) {
-    this.selectedCard = index;
+  onSubmit() {
+    this.weatherService.saveWeather(this.weather);
   }
 }
