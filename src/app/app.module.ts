@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { AppComponent, DarkModeToggler, Resource } from './app.component';
+import { AppComponent, Cards, } from './app.component';
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [AppComponent, DarkModeToggler, Resource],
+  declarations: [AppComponent, Cards],
   imports: [
     BrowserModule, FormsModule
   ],

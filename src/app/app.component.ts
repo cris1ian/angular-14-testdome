@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { enableProdMode, Output, EventEmitter } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-main',
-  template: `<app-root></app-root>`,
+  template: `<app-root [count]=4></app-root>`,
   // templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -20,31 +20,28 @@ export class AppComponent {
 
 @Component({
   selector: 'app-root',
-  template: `<div>
-    <darkmode-toggler (stateChanged)="handleStateChange($event)"></darkmode-toggler>
-  </div>`,
+  template: `
+  <table>
+    <tbody>
+      <tr>
+        <td *ngFor="let card of [].constructor(count); let i = index" (click)="onCardClick(i)">
+          {{i===selectedCard?"up":"down"}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  `,
   styles: []
 })
-export class Resource {
-  handleStateChange(event: any) {
-    console.log(event);
+export class Cards implements OnInit {
+  @Input() count: number = 0;
+  selectedCard: number = -1;
+
+  ngOnInit() {
+    console.log(this.count);
   }
-}
 
-@Component({
-  selector: 'darkmode-toggler',
-  template: `<div>
-    <button (click)="onClick($event)">Toggle dark mode</button>
-    <p>{{darkModeActive ? "active" : "disabled"}}</p>
-  </div>`,
-  styles: []
-})
-export class DarkModeToggler {
-  @Output() stateChanged: EventEmitter<string> = new EventEmitter<string>();
-  darkModeActive: boolean = false;
-
-  onClick = (event: any) => {
-    this.darkModeActive = !this.darkModeActive;
-    this.stateChanged.emit(this.darkModeActive ? "active" : "disabled");
+  onCardClick(index: number) {
+    this.selectedCard = index;
   }
 }
